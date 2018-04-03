@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FindBugsFilter>
+    <Class name="xqa.commons.qpid.jms.MessageMakerHelper"/>
+    <And>
+        <Bug category="DM_DEFAULT_ENCODING"/>
+    </And>
+    <Class name="xqa.commons.qpid.jms.MessageBroker$MessageBrokerException"/>
+    <And>
+        <Bug category="SIC_INNER_SHOULD_BE_STATIC"/>
+    </And>
+</FindBugsFilter>
