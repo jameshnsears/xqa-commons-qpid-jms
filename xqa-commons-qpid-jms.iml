@@ -26,6 +26,8 @@
     <orderEntry type="library" name="Maven: io.netty:netty-transport-native-kqueue:osx-x86_64:4.1.22.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-codec-http:4.1.22.Final" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
+    <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-launcher:1.1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apiguardian:apiguardian-api:1.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.platform:junit-platform-engine:1.1.0" level="project" />

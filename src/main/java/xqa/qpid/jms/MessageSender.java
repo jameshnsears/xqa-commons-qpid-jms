@@ -5,33 +5,46 @@ import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
 import java.util.Date;
+import java.util.UUID;
 
 public class MessageSender {
     private static final Logger logger = LoggerFactory.getLogger(MessageSender.class);
     private Connection connection;
     private Session session;
 
-    public MessageSender(String messageBrokerHost) throws Exception {
+    public MessageSender(String messageBrokerHost, String messageBrokerUsername, String messageBrokerPassword, int messageBrokerRetryAttempts) throws Exception {
         ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost);
 
-        int retryAttempts = 3;
         boolean connected = false;
         while (connected == false) {
             try {
-                connection = factory.createConnection("admin", "admin");
+                connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
                 connected = true;
             } catch (Exception exception) {
-                logger.warn("retryAttempts=" + retryAttempts);
-                if (retryAttempts == 0) {
+                logger.warn("messageBrokerRetryAttempts=" + messageBrokerRetryAttempts);
+                if (messageBrokerRetryAttempts == 0) {
                     throw exception;
                 }
-                retryAttempts--;
+                messageBrokerRetryAttempts--;
                 Thread.sleep(5000);
             }
         }
         connection.start();
 
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+    }
+
+    public void sendAuditEvent(String auditDestination, String jsonBody) throws Exception {
+        BytesMessage messageSent = sendMessage(
+                DestinationType.Queue,
+                auditDestination,
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                jsonBody,
+                DeliveryMode.PERSISTENT);
+
+        logger.debug(MessageLogging.log(MessageLogging.Direction.SEND, messageSent, true));
     }
 
     public static BytesMessage constructMessage(Session session,
