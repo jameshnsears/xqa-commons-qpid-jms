@@ -1,24 +1,18 @@
 package xqa.qpid.jms;
 
 import org.apache.qpid.jms.message.JmsBytesMessage;
-import org.apache.qpid.jms.message.JmsObjectMessage;
-import org.apache.qpid.jms.message.JmsTextMessage;
-import org.apache.qpid.jms.message.facade.JmsMessageFacade;
 import org.apache.qpid.jms.provider.amqp.message.AmqpJmsBytesMessageFacade;
-import org.apache.qpid.jms.provider.amqp.message.AmqpJmsObjectMessageFacade;
 
 import javax.jms.*;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-public class MessageMaker {
+class MessageMaker {
     public static Message createMessage(Session session,
                                         String destination,
                                         String correlationId,
                                         String body) throws JMSException {
-        BytesMessage message = getBytesMessage(session, correlationId, body, session.createQueue(destination));
-        return message;
+        return getBytesMessage(session, correlationId, body, session.createQueue(destination));
     }
 
     public static Message createMessage(Session session,
@@ -35,8 +29,7 @@ public class MessageMaker {
                                         TemporaryQueue destination,
                                         String correlationId,
                                         String body) throws JMSException {
-        BytesMessage message = getBytesMessage(session, correlationId, body, destination);
-        return message;
+        return getBytesMessage(session, correlationId, body, destination);
     }
 
     private static BytesMessage getBytesMessage(Session session,

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessageBrokerTest {
-    MessageBroker messageBroker;
+    private MessageBroker messageBroker;
 
     @Before
     public void before() throws Exception {
@@ -28,11 +28,9 @@ public class MessageBrokerTest {
     }
 
     @Test
-    public void unableToConnectToMessageBroker() throws Exception {
+    public void unableToConnectToMessageBroker() {
         assertThrows(MessageBroker.MessageBrokerException.class,
-            ()->{
-                new MessageBroker("0.0.0.0", 1234, "admin", "admin", 2);
-            });
+            ()-> new MessageBroker("0.0.0.0", 1234, "admin", "admin", 2));
     }
 
 

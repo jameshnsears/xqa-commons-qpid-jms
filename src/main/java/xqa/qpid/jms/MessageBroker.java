@@ -30,7 +30,7 @@ public class MessageBroker {
             ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost, messageBrokerPort);
 
             boolean connected = false;
-            while (connected == false) {
+            while (!connected) {
                 try {
                     synchronized (this) {
                         connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
@@ -92,7 +92,7 @@ public class MessageBroker {
                 sizeResponse = messageConsumer.receive(1000);
             }
         } finally {
-            logger.debug(MessageFormat.format("END; temporayQueueMessages.size={0}", messages.size()));
+            logger.debug(MessageFormat.format("END; size={0}", messages.size()));
             messageConsumer.close();
         }
 

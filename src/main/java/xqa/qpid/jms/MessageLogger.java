@@ -27,7 +27,7 @@ public class MessageLogger {
         if (useTextDigest) {
             commonLogString = commonLogString.concat(MessageFormat.format("; digest(text)={0}", DigestUtils.sha256Hex(text)));
         } else {
-            if (MessageMaker.getTextFromMessage(message) != null && !text.equals("")) {
+            if (!text.equals("")) {
                 commonLogString = commonLogString.concat(MessageFormat.format("; text={0}", text));
             }
         }
