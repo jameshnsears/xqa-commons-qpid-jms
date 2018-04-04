@@ -4,23 +4,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.*;
+import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Vector;
 
 public class MessageBroker {
     private static final Logger logger = LoggerFactory.getLogger(MessageBroker.class);
     private Connection connection;
     private Session session;
-    private Destination temporaryQueue;
-    private List<Message> temporayQueueMessages;
 
-    public MessageBroker(String messageBrokerHost, String messageBrokerUsername, String messageBrokerPassword, int messageBrokerRetryAttempts) throws Exception {
-        ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost);
+    public MessageBroker(
+            String messageBrokerHost,
+            int messageBrokerPort,
+            String messageBrokerUsername,
+            String messageBrokerPassword,
+            int messageBrokerRetryAttempts) throws Exception {
+        ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost, messageBrokerPort);
 
         boolean connected = false;
         while (connected == false) {
             try {
-                connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
+                synchronized (this) {
+                    connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
+                }
                 connected = true;
             } catch (Exception exception) {
                 logger.warn("messageBrokerRetryAttempts=" + messageBrokerRetryAttempts);
@@ -31,86 +38,66 @@ public class MessageBroker {
                 Thread.sleep(5000);
             }
         }
-        connection.start();
 
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        synchronized (this) {
+            connection.start();
+
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        }
     }
 
-    public void sendMessage(String messageDestination, String body) throws Exception {
-        logger.debug(MessageFormat.format("body={0}", body));
+    public void sendMessage(Message message) throws JMSException, UnsupportedEncodingException {
+        logger.info(MessageLogger.log(MessageLogger.Direction.SEND, message, true));
 
-        Destination destination = session.createQueue(messageDestination);
-
-        BytesMessage message = getBytesMessage(body, destination);
-        message.setJMSCorrelationID(UUID.randomUUID().toString());
-
-        sendMessage(destination, message);
-    }
-
-    public void sendMessageTemporaryQueue(String body) throws Exception {
-        logger.debug(MessageFormat.format("body={0}", body));
-
-        BytesMessage message = getBytesMessage(body, temporaryQueue);
-        message.setJMSCorrelationID(UUID.randomUUID().toString());
-
-        sendMessage(temporaryQueue, message);
-    }
-
-    private void sendMessage(Destination destination, BytesMessage message) throws Exception {
-        logger.debug(MessageLogging.log(MessageLogging.Direction.SEND, message, true));
-
-        MessageProducer messageProducer = session.createProducer(destination);
+        MessageProducer messageProducer;
+        synchronized (this) {
+            messageProducer = session.createProducer(message.getJMSDestination());
+        }
         messageProducer.send(message, DeliveryMode.PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
         messageProducer.close();
     }
 
-    public void sendMessageReplyToTemporaryQueue(String replyToDestination, String correlationId, String body) throws Exception {
-        Destination destination = session.createTopic(replyToDestination);
-
-        BytesMessage message = getBytesMessage(body, destination);
-        message.setJMSCorrelationID(correlationId);
-        message.setJMSReplyTo(temporaryQueue);
-
-        sendMessage(destination, message);
+    public synchronized TemporaryQueue createTemporaryQueue() throws JMSException {
+        return session.createTemporaryQueue();
     }
 
-    public void createTemporaryQueue() throws JMSException {
-        temporaryQueue = session.createTemporaryQueue();
-    }
+    public synchronized List<Message> receiveMessagesTemporaryQueue(TemporaryQueue temporaryQueue, long timeout) throws JMSException {
+        logger.debug(MessageFormat.format("temporaryQueue={0}; timeout={1}", temporaryQueue.toString(), timeout));
 
-    public synchronized void receiveMessagesTemporaryQueue(long timeout) throws Exception {
-        logger.debug(MessageFormat.format("timeout={0}", timeout));
+        MessageConsumer messageConsumer;
+        synchronized (this) {
+            messageConsumer = session.createConsumer(temporaryQueue);
+        }
 
-        MessageConsumer messageConsumer = session.createConsumer(temporaryQueue);
+        List<Message> messages = new Vector<>();
 
         try {
-            logger.debug("receiveMessagesTemporaryQueue.START");
-            temporayQueueMessages = new Vector<>();
+            logger.debug("START");
 
             Message sizeResponse = messageConsumer.receive(timeout);
             while (sizeResponse != null) {
-                logger.debug(MessageLogging.log(MessageLogging.Direction.RECEIVE, sizeResponse, false));
-                temporayQueueMessages.add(sizeResponse);
+                logger.info(MessageLogger.log(MessageLogger.Direction.RECEIVE, sizeResponse, false));
+                messages.add(sizeResponse);
                 sizeResponse = messageConsumer.receive(1000);
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
-            logger.debug(MessageFormat.format("receiveMessagesTemporaryQueue.END; temporayQueueMessages.size={0}", temporayQueueMessages.size()));
+            logger.debug(MessageFormat.format("END; temporayQueueMessages.size={0}", messages.size()));
             messageConsumer.close();
         }
-    }
 
-    private BytesMessage getBytesMessage(String body, Destination destination) throws JMSException {
-        BytesMessage message = session.createBytesMessage();
-        message.setJMSDestination(destination);
-        message.setJMSTimestamp(new Date().getTime());
-        message.writeBytes(body.getBytes());
-        return message;
+        return messages;
     }
 
     public void close() throws Exception {
-        session.close();
-        connection.close();
+        synchronized (this) {
+            session.close();
+            connection.close();
+        }
+    }
+
+    public synchronized Session getSession() {
+        return session;
     }
 }

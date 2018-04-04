@@ -2,17 +2,15 @@ package xqa.qpid.jms;
 
 
 import javax.jms.ConnectionFactory;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.util.Hashtable;
 
 public class MessageBrokerConnectionFactory {
-    static public ConnectionFactory messageBroker(final String messageBrokerHost) throws Exception {
+    static public ConnectionFactory messageBroker(final String messageBrokerHost, final int messageBrokerPort) throws Exception {
         Hashtable<String, String> env = new Hashtable<>();
-        env.put("connectionfactory.url.amqp", "amqp://" + messageBrokerHost + ":5672/");
+        env.put("connectionfactory.url.amqp", "amqp://" + messageBrokerHost + ":" + messageBrokerPort);
         env.put("java.naming.factory.initial", "org.apache.qpid.jms.jndi.JmsInitialContextFactory");
-        Context context = new InitialContext(env);
 
-        return (ConnectionFactory) context.lookup("url.amqp");
+        return (ConnectionFactory) new InitialContext(env).lookup("url.amqp");
     }
 }
