@@ -7,8 +7,6 @@ import org.apache.qpid.jms.message.JmsTextMessage;
 import org.apache.qpid.jms.message.facade.JmsMessageFacade;
 import org.apache.qpid.jms.provider.amqp.message.AmqpJmsBytesMessageFacade;
 import org.apache.qpid.jms.provider.amqp.message.AmqpJmsObjectMessageFacade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jms.Destination;
 import javax.jms.Message;
@@ -16,8 +14,6 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 
 public class MessageLogging {
-    private static final Logger logger = LoggerFactory.getLogger(MessageLogging.class);
-
     public static String log(Direction direction,
                              Message message,
                              boolean useDigest) throws Exception {
@@ -36,17 +32,14 @@ public class MessageLogging {
 
     private static String getSubject(Message message) {
         if (message instanceof JmsBytesMessage) {
-            logger.debug("JmsBytesMessage");
             JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
             AmqpJmsBytesMessageFacade facade = (AmqpJmsBytesMessageFacade) jmsBytesMessage.getFacade();
             return facade.getType();
         } else if (message instanceof JmsObjectMessage) {
-            logger.debug("JmsObjectMessage");
             JmsObjectMessage jmsObjectMessage = (JmsObjectMessage) message;
             AmqpJmsObjectMessageFacade facade = (AmqpJmsObjectMessageFacade) jmsObjectMessage.getFacade();
             return facade.getType();
         } else {
-            logger.debug("JmsTextMessage");
             JmsTextMessage jmsTextMessage = (JmsTextMessage) message;
             JmsMessageFacade facade = jmsTextMessage.getFacade();
             return facade.getType();
@@ -55,7 +48,6 @@ public class MessageLogging {
 
     public static String getTextFromMessage(Message message) throws Exception {
         if (message instanceof JmsBytesMessage) {
-            logger.debug("JmsBytesMessage");
             JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
             jmsBytesMessage.reset();
             byte[] byteData;
@@ -63,12 +55,10 @@ public class MessageLogging {
             jmsBytesMessage.readBytes(byteData);
             return new String(byteData, "UTF-8");
         } else if (message instanceof JmsObjectMessage) {
-            logger.debug("JmsObjectMessage");
             JmsObjectMessage jmsObjectMessage = (JmsObjectMessage) message;
             Serializable serializable = jmsObjectMessage.getObject();
             return new String(serializable.toString().getBytes(), "UTF-8");
         } else {
-            logger.debug("JmsTextMessage");
             JmsTextMessage jmsTextMessage = (JmsTextMessage) message;
             return new String(jmsTextMessage.getText().getBytes(), "UTF-8");
         }
