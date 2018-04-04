@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -63,10 +64,12 @@ public class MessageBrokerTest {
     public void receiveMessage() throws JMSException, UnsupportedEncodingException {
         TemporaryQueue replyTo = messageBroker.createTemporaryQueue();
 
+        String correlationId = UUID.randomUUID().toString();
+
         Message message = MessageMaker.createMessage(
                 messageBroker.getSession(),
                 replyTo,
-                UUID.randomUUID().toString(),
+                correlationId,
                 "body-02");
 
         messageBroker.sendMessage(message);
@@ -74,6 +77,7 @@ public class MessageBrokerTest {
         List<Message> messages = messageBroker.receiveMessagesTemporaryQueue(replyTo, 2000);
 
         assertTrue(messages.size() == 1);
+        assertEquals(correlationId, messages.get(0).getJMSCorrelationID());
     }
 }
 

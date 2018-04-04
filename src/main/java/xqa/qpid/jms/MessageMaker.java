@@ -7,7 +7,7 @@ import javax.jms.*;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-class MessageMaker {
+public class MessageMaker {
     public static Message createMessage(Session session,
                                         String destination,
                                         String correlationId,
