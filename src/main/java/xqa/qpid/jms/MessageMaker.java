@@ -52,36 +52,17 @@ public class MessageMaker {
     }
 
     public static String getSubject(Message message) {
-        if (message instanceof JmsBytesMessage) {
-            JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
-            AmqpJmsBytesMessageFacade facade = (AmqpJmsBytesMessageFacade) jmsBytesMessage.getFacade();
-            return facade.getType();
-        } else if (message instanceof JmsObjectMessage) {
-            JmsObjectMessage jmsObjectMessage = (JmsObjectMessage) message;
-            AmqpJmsObjectMessageFacade facade = (AmqpJmsObjectMessageFacade) jmsObjectMessage.getFacade();
-            return facade.getType();
-        } else {
-            JmsTextMessage jmsTextMessage = (JmsTextMessage) message;
-            JmsMessageFacade facade = jmsTextMessage.getFacade();
-            return facade.getType();
-        }
+        JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
+        AmqpJmsBytesMessageFacade facade = (AmqpJmsBytesMessageFacade) jmsBytesMessage.getFacade();
+        return facade.getType();
     }
 
     public static String getTextFromMessage(Message message) throws JMSException, UnsupportedEncodingException {
-        if (message instanceof JmsBytesMessage) {
-            JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
-            jmsBytesMessage.reset();
-            byte[] byteData;
-            byteData = new byte[(int) jmsBytesMessage.getBodyLength()];
-            jmsBytesMessage.readBytes(byteData);
-            return new String(byteData, "UTF-8");
-        } else if (message instanceof JmsObjectMessage) {
-            JmsObjectMessage jmsObjectMessage = (JmsObjectMessage) message;
-            Serializable serializable = jmsObjectMessage.getObject();
-            return new String(serializable.toString().getBytes(), "UTF-8");
-        } else {
-            JmsTextMessage jmsTextMessage = (JmsTextMessage) message;
-            return new String(jmsTextMessage.getText().getBytes(), "UTF-8");
-        }
+        JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
+        jmsBytesMessage.reset();
+        byte[] byteData;
+        byteData = new byte[(int) jmsBytesMessage.getBodyLength()];
+        jmsBytesMessage.readBytes(byteData);
+        return new String(byteData, "UTF-8");
     }
 }

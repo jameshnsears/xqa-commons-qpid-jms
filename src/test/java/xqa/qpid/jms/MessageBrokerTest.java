@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessageBrokerTest {
@@ -25,6 +26,15 @@ public class MessageBrokerTest {
     public void after() throws Exception {
         messageBroker.close();
     }
+
+    @Test
+    public void unableToConnectToMessageBroker() throws Exception {
+        assertThrows(MessageBroker.MessageBrokerException.class,
+            ()->{
+                new MessageBroker("0.0.0.0", 1234, "admin", "admin", 2);
+            });
+    }
+
 
     @Test
     public void sendMessage() throws JMSException, UnsupportedEncodingException {

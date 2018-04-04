@@ -14,35 +14,46 @@ public class MessageBroker {
     private Connection connection;
     private Session session;
 
+    public class MessageBrokerException extends Exception {
+        public MessageBrokerException(String message) {
+            super(message);
+        }
+    }
+
     public MessageBroker(
             String messageBrokerHost,
             int messageBrokerPort,
             String messageBrokerUsername,
             String messageBrokerPassword,
-            int messageBrokerRetryAttempts) throws Exception {
-        ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost, messageBrokerPort);
+            int messageBrokerRetryAttempts) throws MessageBrokerException {
+        try {
+            ConnectionFactory factory = MessageBrokerConnectionFactory.messageBroker(messageBrokerHost, messageBrokerPort);
 
-        boolean connected = false;
-        while (connected == false) {
-            try {
-                synchronized (this) {
-                    connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
+            boolean connected = false;
+            while (connected == false) {
+                try {
+                    synchronized (this) {
+                        connection = factory.createConnection(messageBrokerUsername, messageBrokerPassword);
+                    }
+                    connected = true;
+                } catch (Exception exception) {
+                    messageBrokerRetryAttempts--;
+                    logger.warn("messageBrokerRetryAttempts=" + messageBrokerRetryAttempts);
+                    if (messageBrokerRetryAttempts == 0) {
+                        throw exception;
+                    }
+                    Thread.sleep(2500);
                 }
-                connected = true;
-            } catch (Exception exception) {
-                logger.warn("messageBrokerRetryAttempts=" + messageBrokerRetryAttempts);
-                if (messageBrokerRetryAttempts == 0) {
-                    throw exception;
-                }
-                messageBrokerRetryAttempts--;
-                Thread.sleep(5000);
             }
-        }
 
-        synchronized (this) {
-            connection.start();
+            synchronized (this) {
+                connection.start();
 
-            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            }
+        } catch (Exception exception) {
+            logger.error(exception.getMessage());
+            throw new MessageBrokerException(exception.getMessage());
         }
     }
 
@@ -61,7 +72,7 @@ public class MessageBroker {
         return session.createTemporaryQueue();
     }
 
-    public synchronized List<Message> receiveMessagesTemporaryQueue(TemporaryQueue temporaryQueue, long timeout) throws JMSException {
+    public synchronized List<Message> receiveMessagesTemporaryQueue(TemporaryQueue temporaryQueue, long timeout) throws JMSException, UnsupportedEncodingException {
         logger.debug(MessageFormat.format("temporaryQueue={0}; timeout={1}", temporaryQueue.toString(), timeout));
 
         MessageConsumer messageConsumer;
@@ -80,8 +91,6 @@ public class MessageBroker {
                 messages.add(sizeResponse);
                 sizeResponse = messageConsumer.receive(1000);
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage());
         } finally {
             logger.debug(MessageFormat.format("END; temporayQueueMessages.size={0}", messages.size()));
             messageConsumer.close();
