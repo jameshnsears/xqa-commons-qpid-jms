@@ -30,7 +30,7 @@
 
 ### 3.5. deploy
 #### 3.5.1. to snapshot
-* mvn clean deploy
+* mvn -DperformRelease=true clean deploy
 * [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
 * if unhappy: mvn nexus-staging:drop
 
