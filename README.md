@@ -11,38 +11,36 @@
 * mvn jacoco:report coveralls:report
 * mvn site  # findbugs
 
-## 3. Publishing to [https://search.maven.org/](https://search.maven.org/)
-### 3.1. (one off) Register - for groupId
+## 3. Publishing to [Maven Central](https://search.maven.org/)
+* (one off) [https://www.youtube.com/watch?v=0gyF17kWMLg&feature=youtu.be](https://www.youtube.com/watch?v=0gyF17kWMLg&feature=youtu.be)
+
+### 3.1. (one off) Register - for groupId, creating JIRA ticket
 * login to [https://issues.sonatype.org](https://issues.sonatype.org/login.jsp?os_destination=%2Fdefault.jsp)
 
-### 3.2. Visit project XQA JIRA ticket
+### 3.1.1. Visit project JIRA ticket
 * https://issues.sonatype.org/browse/OSSRH-38943
 
-### 3.3. settings.xml
+### 3.2. settings.xml
 * cp settings.xml ~/.m2
 * configure <password/> element with correct password
 
-### 3.4. ensure pgp key installed
-* installed into Seahorse
+### 3.3. Ensure pgp key installed
+* install into Seahorse
 
-#### 3.4.1 export public key into git (for travis)
-* gpg --armor --export james.hn.sears@gmail.com > pub.asc
-
-### 3.5. deploy
-#### 3.5.1. to snapshot
+### 3.4. Deploy
+#### 3.4.1. To staging snapshot repo
 * mvn -DperformRelease=true clean deploy
+    * entering private pgp key password
 * [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
+* [https://oss.sonatype.org/content/repositories/snapshots/com/github/jameshnsears/xqa-commons-qpid-jms/1.0-SNAPSHOT/](https://oss.sonatype.org/content/repositories/snapshots/com/github/jameshnsears/xqa-commons-qpid-jms/1.0-SNAPSHOT/)
+
+#### 3.4.2 To staging release repo
+* [https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be](https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be)
+
+##### 3.4.2.1. (one off) Update JIRA ticket
+* update https://issues.sonatype.org/browse/OSSRH-38943
+
+##### 3.4.2.2.
+* remove "-SNAPSHOT" in pom.xml
+* mvn -DperformRelease=true clean deploy
 * if unhappy: mvn nexus-staging:drop
-
-#### 3.4.2 promote to release
-* mvn nexus-staging:release
-
-### 3.5. Update XQA JIRA ticket
-* 
-
-com.github.jameshnsears has been prepared, now user(s) jsears can:
-* Deploy snapshot artifacts into repository https://oss.sonatype.org/content/repositories/snapshots
-* Deploy release artifacts into the staging repository https://oss.sonatype.org/service/local/staging/deploy/maven2
-* Promote staged artifacts into repository 'Releases'
-* Download snapshot and release artifacts from group https://oss.sonatype.org/content/groups/public
-* Download snapshot, release and staged artifacts from staging group https://oss.sonatype.org/content/groups/staging
