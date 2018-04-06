@@ -12,7 +12,6 @@
 * mvn site  # findbugs
 
 ## 3. Publishing to [Maven Central](https://search.maven.org/)
-* (one off) [https://www.youtube.com/watch?v=0gyF17kWMLg&feature=youtu.be](https://www.youtube.com/watch?v=0gyF17kWMLg&feature=youtu.be)
 
 ### 3.1. (one off) Register - for groupId, creating JIRA ticket
 * login to [https://issues.sonatype.org](https://issues.sonatype.org/login.jsp?os_destination=%2Fdefault.jsp)
@@ -36,7 +35,7 @@
     * [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
 
 #### 3.4.2 To staging release repo
-* [https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be](https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be)
+* (optionally) [https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be](https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be)
 
 ##### 3.4.2.1. publish
 * remove "-SNAPSHOT" in pom.xml + increment version #.
@@ -46,5 +45,5 @@
 ### 3.5. Search Maven Cental
 * after a couple of hours [https://search.maven.org/](https://search.maven.org/) for com.github.jameshnsears, pom.xml imports should happen in 10 minutes.
 
-### 3.6.. (one off) Update JIRA ticket
+### 3.6. (one off) Update JIRA ticket
 * update https://issues.sonatype.org/browse/OSSRH-38943 - saying it's published successfully.
