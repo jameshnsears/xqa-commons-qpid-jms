@@ -16,9 +16,8 @@ cache:
   - $HOME/.m2
 
 script:
-  - gpg --import pub.asc
-#  - docker-compose -p "dev" up -d xqa-message-broker
-#  - mvn clean test
+  - docker-compose -p "dev" up -d xqa-message-broker
+  - mvn -Dgpg.skip clean test
 
 after_success:
   - mvn jacoco:report coveralls:report
