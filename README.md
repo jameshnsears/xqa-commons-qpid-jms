@@ -40,7 +40,7 @@
 ##### 3.4.2.1. (one off) Update JIRA ticket
 * update https://issues.sonatype.org/browse/OSSRH-38943
 
-##### 3.4.2.2.
+##### 3.4.2.2. publish
 * remove "-SNAPSHOT" in pom.xml
 * mvn -DperformRelease=true clean deploy
 * if unhappy: mvn nexus-staging:drop
