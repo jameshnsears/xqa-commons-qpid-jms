@@ -15,6 +15,9 @@ cache:
   directories:
   - $HOME/.m2
 
+before_script:
+  - gpg --import pub.asc
+
 script:
   - docker-compose -p "dev" up -d xqa-message-broker
   - mvn clean test

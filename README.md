@@ -25,8 +25,11 @@
 ### 3.4. ensure pgp key installed
 * installed into Seahorse
 
-### 3.4 deploy
-#### 3.4.1. to snapshot
+#### 3.4.1 export public key into git (for travis)
+* gpg --armor --export james.hn.sears@gmail.com > pub.asc
+
+### 3.5. deploy
+#### 3.5.1. to snapshot
 * mvn clean deploy
 * [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
 * if unhappy: mvn nexus-staging:drop
