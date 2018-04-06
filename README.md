@@ -17,7 +17,7 @@
 ### 3.1. (one off) Register - for groupId, creating JIRA ticket
 * login to [https://issues.sonatype.org](https://issues.sonatype.org/login.jsp?os_destination=%2Fdefault.jsp)
 
-### 3.1.1. Visit project JIRA ticket
+#### 3.1.1. Visit project JIRA ticket
 * https://issues.sonatype.org/browse/OSSRH-38943
 
 ### 3.2. settings.xml
@@ -38,9 +38,9 @@
 * [https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be](https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be)
 
 ##### 3.4.2.1. (one off) Update JIRA ticket
-* update https://issues.sonatype.org/browse/OSSRH-38943
+* update https://issues.sonatype.org/browse/OSSRH-38943 - asking for ability to release.
 
 ##### 3.4.2.2. publish
 * remove "-SNAPSHOT" in pom.xml
-* mvn -DperformRelease=true clean deploy
+* mvn -DperformRelease=true clean deploy -P release  # the -P release is optional?
 * if unhappy: mvn nexus-staging:drop
