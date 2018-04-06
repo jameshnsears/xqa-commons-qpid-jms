@@ -16,9 +16,10 @@
 
 ### 3.1. (one off) Register - for groupId, creating JIRA ticket
 * login to [https://issues.sonatype.org](https://issues.sonatype.org/login.jsp?os_destination=%2Fdefault.jsp)
+* using groupId: com.github.jameshnsears
 
 #### 3.1.1. Visit project JIRA ticket
-* https://issues.sonatype.org/browse/OSSRH-38943
+* record any deployment issues in: https://issues.sonatype.org/browse/OSSRH-38943
 
 ### 3.2. settings.xml
 * cp settings.xml ~/.m2
@@ -31,16 +32,19 @@
 #### 3.4.1. To staging snapshot repo
 * mvn -DperformRelease=true clean deploy
     * entering private pgp key password
-* [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
-* [https://oss.sonatype.org/content/repositories/snapshots/com/github/jameshnsears/xqa-commons-qpid-jms/1.0-SNAPSHOT/](https://oss.sonatype.org/content/repositories/snapshots/com/github/jameshnsears/xqa-commons-qpid-jms/1.0-SNAPSHOT/)
+* visit:
+    * [https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms](https://oss.sonatype.org/#nexus-search;quick~xqa-commons-qpid-jms)
 
 #### 3.4.2 To staging release repo
 * [https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be](https://www.youtube.com/watch?v=dXR4pJ_zS-0&feature=youtu.be)
 
-##### 3.4.2.1. (one off) Update JIRA ticket
-* update https://issues.sonatype.org/browse/OSSRH-38943 - asking for ability to release.
+##### 3.4.2.1. publish
+* remove "-SNAPSHOT" in pom.xml + increment version #.
+* mvn -DperformRelease=true clean deploy
+    * entering private pgp key password
 
-##### 3.4.2.2. publish
-* remove "-SNAPSHOT" in pom.xml
-* mvn -DperformRelease=true clean deploy -P release  # the -P release is optional?
-* if unhappy: mvn nexus-staging:drop
+### 3.5. Search Maven Cental
+* after a couple of hours [https://search.maven.org/](https://search.maven.org/) for com.github.jameshnsears, pom.xml imports should happen in 10 minutes.
+
+### 3.6.. (one off) Update JIRA ticket
+* update https://issues.sonatype.org/browse/OSSRH-38943 - saying it's published successfully.
