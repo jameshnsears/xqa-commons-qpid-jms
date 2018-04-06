@@ -1,4 +1,4 @@
-package xqa.qpid.jms;
+package xqa.commons.qpid.jms;
 
 import org.apache.qpid.jms.message.JmsBytesMessage;
 import org.apache.qpid.jms.provider.amqp.message.AmqpJmsBytesMessageFacade;
@@ -13,6 +13,16 @@ public class MessageMaker {
                                         String correlationId,
                                         String body) throws JMSException {
         return getBytesMessage(session, correlationId, body, session.createQueue(destination));
+    }
+
+    public static Message createMessageWithSubject(Session session,
+                                                   String destination,
+                                                   String correlationId,
+                                                   String subject,
+                                                   String body) throws JMSException {
+        BytesMessage message = getBytesMessage(session, correlationId, body, session.createQueue(destination));
+        message.setJMSType(subject);
+        return message;
     }
 
     public static Message createMessage(Session session,

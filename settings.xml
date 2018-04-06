@@ -1,0 +1,9 @@
+<settings>
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>jsears</username>
+            <password>R.... * 2</password>
+        </server>
+    </servers>
+</settings>

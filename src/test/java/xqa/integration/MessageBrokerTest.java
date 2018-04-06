@@ -1,8 +1,10 @@
-package xqa.qpid.jms;
+package xqa.integration;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import xqa.commons.qpid.jms.MessageBroker;
+import xqa.commons.qpid.jms.MessageMaker;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -11,9 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageBrokerTest {
     private MessageBroker messageBroker;
@@ -47,13 +47,25 @@ public class MessageBrokerTest {
     }
 
     @Test
+    public void createMessageWithSubject() throws JMSException {
+        Message message = MessageMaker.createMessageWithSubject(
+                messageBroker.getSession(),
+                "xqa.test.destination-01",
+                UUID.randomUUID().toString(),
+                "subject-01",
+                "body-01");
+
+        assertEquals("subject-01", message.getJMSType());
+    }
+
+    @Test
     public void sendMessageWithReplyTo() throws JMSException, UnsupportedEncodingException {
         Message message = MessageMaker.createMessage(
                 messageBroker.getSession(),
-                "xqa.test.destination-01",
+                "xqa.test.destination-02",
                 messageBroker.createTemporaryQueue(),
                 UUID.randomUUID().toString(),
-                "body-01");
+                "body-02");
 
         messageBroker.sendMessage(message);
 
@@ -76,7 +88,7 @@ public class MessageBrokerTest {
 
         List<Message> messages = messageBroker.receiveMessagesTemporaryQueue(replyTo, 2000);
 
-        assertTrue(messages.size() == 1);
+        assertEquals(1, messages.size());
         assertEquals(correlationId, messages.get(0).getJMSCorrelationID());
     }
 }

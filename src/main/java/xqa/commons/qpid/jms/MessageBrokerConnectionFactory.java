@@ -1,4 +1,4 @@
-package xqa.qpid.jms;
+package xqa.commons.qpid.jms;
 
 
 import javax.jms.ConnectionFactory;

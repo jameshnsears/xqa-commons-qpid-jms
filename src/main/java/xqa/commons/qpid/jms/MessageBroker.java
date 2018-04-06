@@ -1,4 +1,4 @@
-package xqa.qpid.jms;
+package xqa.commons.qpid.jms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ public class MessageBroker {
     private Session session;
 
     public class MessageBrokerException extends Exception {
-        public MessageBrokerException(String message) {
+        MessageBrokerException(String message) {
             super(message);
         }
     }

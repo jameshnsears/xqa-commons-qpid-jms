@@ -17,7 +17,6 @@ cache:
 
 script:
   - docker-compose -p "dev" up -d xqa-message-broker
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
   - mvn clean test
 
 after_success:
