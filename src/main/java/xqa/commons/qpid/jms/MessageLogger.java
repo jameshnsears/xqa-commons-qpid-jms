@@ -22,7 +22,7 @@ public class MessageLogger {
                 MessageMaker.getSubject(message),
                 message.getJMSExpiration());
 
-        String text = MessageMaker.getTextFromMessage(message);
+        String text = MessageMaker.getBody(message);
 
         if (useTextDigest) {
             commonLogString = commonLogString.concat(MessageFormat.format("; digest(text)={0}", DigestUtils.sha256Hex(text)));

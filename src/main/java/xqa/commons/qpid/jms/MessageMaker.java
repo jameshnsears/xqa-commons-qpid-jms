@@ -9,43 +9,36 @@ import java.util.Date;
 
 public class MessageMaker {
     public static Message createMessage(Session session,
-                                        String destination,
+                                        Destination destination,
                                         String correlationId,
                                         String body) throws JMSException {
-        return getBytesMessage(session, correlationId, body, session.createQueue(destination));
+        return getBytesMessage(session, correlationId, destination, body);
     }
 
-    public static Message createMessageWithSubject(Session session,
-                                                   String destination,
-                                                   String correlationId,
-                                                   String subject,
-                                                   String body) throws JMSException {
-        BytesMessage message = getBytesMessage(session, correlationId, body, session.createQueue(destination));
+    public static Message createMessage(Session session,
+                                        Destination destination,
+                                        String correlationId,
+                                        String subject,
+                                        String body) throws JMSException {
+        BytesMessage message = getBytesMessage(session, correlationId, destination, body);
         message.setJMSType(subject);
         return message;
     }
 
     public static Message createMessage(Session session,
-                                        String destination,
-                                        TemporaryQueue replyTo,
+                                        Destination destination,
+                                        Destination replyTo,
                                         String correlationId,
                                         String body) throws JMSException {
-        BytesMessage message = getBytesMessage(session, correlationId, body, session.createQueue(destination));
+        BytesMessage message = getBytesMessage(session, correlationId, destination, body);
         message.setJMSReplyTo(replyTo);
         return message;
     }
 
-    public static Message createMessage(Session session,
-                                        TemporaryQueue destination,
-                                        String correlationId,
-                                        String body) throws JMSException {
-        return getBytesMessage(session, correlationId, body, destination);
-    }
-
     private static BytesMessage getBytesMessage(Session session,
                                                 String correlationId,
-                                                String body,
-                                                Destination destination) throws JMSException {
+                                                Destination destination,
+                                                String body) throws JMSException {
         BytesMessage message = session.createBytesMessage();
         message.setJMSDestination(destination);
         message.setJMSTimestamp(new Date().getTime());
@@ -60,7 +53,7 @@ public class MessageMaker {
         return facade.getType();
     }
 
-    public static String getTextFromMessage(Message message) throws JMSException, UnsupportedEncodingException {
+    public static String getBody(Message message) throws JMSException, UnsupportedEncodingException {
         JmsBytesMessage jmsBytesMessage = (JmsBytesMessage) message;
         jmsBytesMessage.reset();
         byte[] byteData;

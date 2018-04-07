@@ -34,12 +34,11 @@ public class MessageBrokerTest {
             ()-> new MessageBroker("0.0.0.0", 1234, "admin", "admin", 2));
     }
 
-
     @Test
     public void sendMessage() throws JMSException, UnsupportedEncodingException {
         Message message = MessageMaker.createMessage(
                 messageBroker.getSession(),
-                "xqa.test.destination-00",
+                messageBroker.getSession().createQueue("xqa.test.destination-00"),
                 UUID.randomUUID().toString(),
                 "body-00");
 
@@ -48,9 +47,9 @@ public class MessageBrokerTest {
 
     @Test
     public void createMessageWithSubject() throws JMSException {
-        Message message = MessageMaker.createMessageWithSubject(
+        Message message = MessageMaker.createMessage(
                 messageBroker.getSession(),
-                "xqa.test.destination-01",
+                messageBroker.getSession().createQueue("xqa.test.destination-01"),
                 UUID.randomUUID().toString(),
                 "subject-01",
                 "body-01");
@@ -62,7 +61,7 @@ public class MessageBrokerTest {
     public void sendMessageWithReplyTo() throws JMSException, UnsupportedEncodingException {
         Message message = MessageMaker.createMessage(
                 messageBroker.getSession(),
-                "xqa.test.destination-02",
+                messageBroker.getSession().createQueue("xqa.test.destination-02"),
                 messageBroker.createTemporaryQueue(),
                 UUID.randomUUID().toString(),
                 "body-02");
@@ -82,7 +81,7 @@ public class MessageBrokerTest {
                 messageBroker.getSession(),
                 replyTo,
                 correlationId,
-                "body-02");
+                "body-03");
 
         messageBroker.sendMessage(message);
 
