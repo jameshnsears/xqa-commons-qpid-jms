@@ -75,10 +75,7 @@ public class MessageBroker {
     public synchronized List<Message> receiveMessagesTemporaryQueue(TemporaryQueue temporaryQueue, long timeout) throws JMSException, UnsupportedEncodingException {
         logger.debug(MessageFormat.format("temporaryQueue={0}; timeout={1}", temporaryQueue.toString(), timeout));
 
-        MessageConsumer messageConsumer;
-        synchronized (this) {
-            messageConsumer = session.createConsumer(temporaryQueue);
-        }
+        MessageConsumer messageConsumer = session.createConsumer(temporaryQueue);
 
         List<Message> messages = new Vector<>();
 
