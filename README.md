@@ -18,7 +18,7 @@
 * using groupId: com.github.jameshnsears
 
 #### 3.1.1. Visit project JIRA ticket
-* record any deployment issues in: https://issues.sonatype.org/browse/OSSRH-38943
+* record any deployment issues in: https://issues.sonatype.org/browse/OSSRH-nnnnn
 
 ### 3.2. settings.xml
 * cp settings.xml ~/.m2
@@ -46,4 +46,4 @@
 * after a couple of hours [https://search.maven.org/](https://search.maven.org/) for com.github.jameshnsears, pom.xml imports should happen in 10 minutes.
 
 ### 3.6. (one off) Update JIRA ticket
-* update https://issues.sonatype.org/browse/OSSRH-38943 - saying it's published successfully.
+* update https://issues.sonatype.org/browse/OSSRH-nnnnn - saying it's published successfully.
