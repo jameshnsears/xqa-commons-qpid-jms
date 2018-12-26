@@ -1,3 +1,5 @@
+package xqa;
+
 import org.apache.qpid.jms.message.JmsObjectMessage;
 import org.apache.qpid.jms.message.JmsTextMessage;
 import org.apache.qpid.jms.message.facade.JmsMessageFacade;
