@@ -51,7 +51,8 @@ public class MessageBrokerTest {
 
     @Test
     public void unableToConnectToMessageBroker() {
-        assertThrows(MessageBroker.MessageBrokerException.class,
+        assertThrows(
+                MessageBroker.MessageBrokerException.class,
                 () -> new MessageBroker("0.0.0.0", 1234, "admin", "admin", 3));
     }
 
@@ -59,7 +60,9 @@ public class MessageBrokerTest {
     public void sendMessage() {
         try {
             final Message message = MessageMakerHelper.createMessage(messageBroker.getSession(),
-                    messageBroker.getSession().createQueue("xqa.test.destination-00"), UUID.randomUUID().toString(),
+                    messageBroker.getSession().createQueue(
+                            "xqa.test.destination-00"),
+                    UUID.randomUUID().toString(),
                     "body-00");
 
             messageBroker.sendMessage(message);
@@ -71,8 +74,11 @@ public class MessageBrokerTest {
     @Test
     public void createMessageWithSubject() throws JMSException {
         final Message message = MessageMakerHelper.createMessage(messageBroker.getSession(),
-                messageBroker.getSession().createQueue("xqa.test.destination-01"), UUID.randomUUID().toString(),
-                "subject-01", "body-01");
+                messageBroker.getSession().createQueue(
+                        "xqa.test.destination-01"),
+                        UUID.randomUUID().toString(),
+                "subject-01",
+                "body-01");
 
         Assertions.assertEquals("subject-01", message.getJMSType());
     }
@@ -80,7 +86,8 @@ public class MessageBrokerTest {
     @Test
     public void sendMessageWithReplyTo() throws JMSException, MessageBroker.MessageBrokerException {
         final Message message = MessageMakerHelper.createMessage(messageBroker.getSession(),
-                messageBroker.getSession().createQueue("xqa.test.destination-02"), messageBroker.createTemporaryQueue(),
+                messageBroker.getSession().createQueue(
+                        "xqa.test.destination-02"), messageBroker.createTemporaryQueue(),
                 UUID.randomUUID().toString(), "body-02");
 
         messageBroker.sendMessage(message);
@@ -94,9 +101,11 @@ public class MessageBrokerTest {
 
         final String correlationId = UUID.randomUUID().toString();
 
-        messageBroker.sendMessage(MessageMakerHelper.createMessage(messageBroker.getSession(), replyTo, correlationId, "body-03"));
+        messageBroker.sendMessage(
+                MessageMakerHelper.createMessage(messageBroker.getSession(), replyTo, correlationId, "body-03"));
 
-        final List<Message> messages = messageBroker.receiveMessagesTemporaryQueue(replyTo, 2000, 1000);
+        final List<Message> messages
+                = messageBroker.receiveMessagesTemporaryQueue(replyTo, 2000, 1000);
 
         Assertions.assertEquals(1, messages.size());
         Assertions.assertEquals(correlationId, messages.get(0).getJMSCorrelationID());

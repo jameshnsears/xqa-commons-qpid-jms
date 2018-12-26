@@ -1,19 +1,20 @@
 package xqa;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.Serializable;
+
+import javax.jms.JMSException;
+
 import org.apache.qpid.jms.message.JmsObjectMessage;
 import org.apache.qpid.jms.message.JmsTextMessage;
 import org.apache.qpid.jms.message.facade.JmsMessageFacade;
 import org.apache.qpid.jms.provider.amqp.message.AmqpJmsObjectMessageFacade;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import xqa.commons.qpid.jms.MessageMakerHelper;
-
-import javax.jms.*;
-
-import java.io.Serializable;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class MessageMakerHelperTest {
     @Test
