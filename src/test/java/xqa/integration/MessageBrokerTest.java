@@ -39,7 +39,7 @@ public class MessageBrokerTest {
         dockerClient.startContainers(configurationAccessor);
 
         messageBroker
-                = new MessageBroker("0.0.0.0", 5672, "admin", "admin", 3);
+                = new MessageBroker("0.0.0.0", 5672, "admin", "admin", 10);
     }
 
     @AfterEach
@@ -53,7 +53,7 @@ public class MessageBrokerTest {
     public void unableToConnectToMessageBroker() {
         assertThrows(
                 MessageBroker.MessageBrokerException.class,
-                () -> new MessageBroker("0.0.0.0", 1234, "admin", "admin", 3));
+                () -> new MessageBroker("0.0.0.0", 1234, "admin", "admin", 10));
     }
 
     @Test
